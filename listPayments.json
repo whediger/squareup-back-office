@@ -1,5 +1,3 @@
-// Example request: https://connect.squareup.com/v1/LOCATION_ID/payments?begin_time=2013-01-15T00:00:00Z&end_time=2013-01-31T00:00:00Z
-
 [
   {
     "id": "Jq74mCczmFXk1tC10GB",
