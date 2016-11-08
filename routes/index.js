@@ -10,5 +10,12 @@ router.get('/', function(req, res){
   });
 });
 
+router.get('/locations', function(req, res){
+  squareup.getLocations()
+  .then(function(data){
+    data = JSON.parse(data);
+    res.json(data);
+  });
+});
 
 module.exports = router;
