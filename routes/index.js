@@ -6,6 +6,7 @@ var squareup = require('../data/squareup');
 router.get('/', function(req, res){
   squareup.getSales()
   .then(function(data){
+    data = JSON.parse(data);
     res.json(data);
   });
 });
