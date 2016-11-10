@@ -7,13 +7,14 @@ module.exports = {
     return new Promise(function(fulfill, reject){
       var totalSales = 0;
       var options = { method: 'GET',
-                        url: 'https://connect.squareup.com/v1/996NZP3EEMBXN/payments?begin_time=2015-01-17T00:00:00Z&end_time=2015-01-18T00:00:00Z',
+                         url: 'https://connect.squareup.com/v1/996NZP3EEMBXN/payments?begin_time=2015-01-17T00:00:00Z&end_time=2015-01-18T00:00:00Z',
                     headers:
                          { 'postman-token': '5ceddfb1-9d9e-2b6e-e8a1-07200fc04676',
                            'cache-control': 'no-cache',
-                           'content-type': 'application/json',
-                           accept: 'application/json',
-                           authorization: 'Bearer ' + process.env.STELLAS_ACCESS_TOKEN }
+                            'content-type': 'application/json',
+                                    accept: 'application/json',
+                             authorization: 'Bearer ' + process.env.STELLAS_ACCESS_TOKEN
+                         }
                     }
       request(options, function(err, res, data){
         data = JSON.parse(data);
@@ -36,9 +37,9 @@ module.exports = {
                     headers:
                          { 'postman-token': '5ceddfb1-9d9e-2b6e-e8a1-07200fc04676',
                            'cache-control': 'no-cache',
-                           'content-type': 'application/json',
-                           accept: 'application/json',
-                           authorization: 'Bearer ' + process.env.STELLAS_ACCESS_TOKEN }
+                            'content-type': 'application/json',
+                                    accept: 'application/json',
+                             authorization: 'Bearer ' + process.env.STELLAS_ACCESS_TOKEN }
                     }
         request(options, function (err, res, data) {
         if (err) reject(err);
@@ -69,7 +70,8 @@ module.exports = {
                            'cache-control': 'no-cache',
                             'content-type': 'application/json',
                                     accept: 'application/json',
-                             authorization: 'Bearer ' + process.env.STELLAS_ACCESS_TOKEN }
+                             authorization: 'Bearer ' + process.env.STELLAS_ACCESS_TOKEN
+                         }
                     }
       request(options, function(err, res, data){
         data = JSON.parse(data);
