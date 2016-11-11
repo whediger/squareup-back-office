@@ -107,16 +107,20 @@ module.exports = {
       for (var e in data[i].itemizations)
         var catagoryName = data[i].itemizations[e].item_detail.category_name;
         if(!catagoryName) {
-          if (catagorySales.catagories['un-catagorized']) {
-            catagorySales.catagories['un-catagorized'] += 1;
+          if (catagorySales.catagories.uncatagorized) {
+            catagorySales.catagories.uncatagorized.items += 1;
           } else {
-            catagorySales.catagories = { 'un-catagorized': 1 };
+            catagorySales.catagories.uncatagorized = {};
+            catagorySales.catagories.uncatagorized.items = 1;
           }
         } else {
           if (catagorySales.catagories[catagoryName]){
-            catagorySales.catagories[catagoryName] += 1;
+            catagorySales.catagories[catagoryName].totalSales += data[i].itemizations[e].net_sales_money.amount;
+            catagorySales.catagories[catagoryName].items  += Math.floor(data[i].itemizations[e].quantity);
           } else {
-            catagorySales.catagories[catagoryName] = 1;
+            catagorySales.catagories[catagoryName] = {};
+            catagorySales.catagories[catagoryName].totalSales = data[i].itemizations[e].net_sales_money.amount;
+            catagorySales.catagories[catagoryName].items = Math.floor(data[i].itemizations[e].quantity);
           }
 
           // } else {
