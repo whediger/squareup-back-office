@@ -107,9 +107,18 @@ module.exports = {
       for (var e in data[i].itemizations)
         var catagoryName = data[i].itemizations[e].item_detail.category_name;
         if(!catagoryName) {
-          catagorySales.catagories = { 'un-catagorized': 1 };
+          if (catagorySales.catagories['un-catagorized']) {
+            catagorySales.catagories['un-catagorized'] += 1;
+          } else {
+            catagorySales.catagories = { 'un-catagorized': 1 };
+          }
         } else {
+          if (catagorySales.catagories[catagoryName]){
+            catagorySales.catagories[catagoryName] += 1;
+          } else {
             catagorySales.catagories[catagoryName] = 1;
+          }
+
           // } else {
           //   catagorySales.catagories = data[i].itemizations[e].item_detail.category_name;
           // }
