@@ -108,9 +108,11 @@ module.exports = {
         var catagoryName = data[i].itemizations[e].item_detail.category_name;
         if(!catagoryName) {
           if (catagorySales.catagories.uncatagorized) {
+            catagorySales.catagories.uncatagorized.totalSales = data[i].itemizations[e].net_sales_money.amount;
             catagorySales.catagories.uncatagorized.items += 1;
           } else {
             catagorySales.catagories.uncatagorized = {};
+            catagorySales.catagories.uncatagorized.totalSales = data[i].itemizations[e].net_sales_money.amount;
             catagorySales.catagories.uncatagorized.items = 1;
           }
         } else {
