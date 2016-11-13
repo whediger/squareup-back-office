@@ -5,8 +5,9 @@ module.exports = {
   //TODO: add startdate and enddate params. And, location id in url
   getSales: function(){
     return new Promise(function(fulfill, reject){
-      var totalSales = 0;
-      var catagorySales = {};
+      var results = {};
+      console.log("first results +==}========> +==}========> +==}========>");
+      results.totalSales = 0;
       var options = { method: 'GET',
                          url: 'https://connect.squareup.com/v1/996NZP3EEMBXN/payments?begin_time=2016-02-01T00:00:00Z&end_time=2016-02-02T00:00:00Z',
                     headers:
@@ -20,16 +21,15 @@ module.exports = {
                     }
       request(options, function(err, res, data){
         data = JSON.parse(data);
-        totalSales = module.exports.getTotalSales(data);
-        catagorySales.catagories = module.exports.getCatagorySales(data);
-        console.log(catagorySales.catagories);
+        results.totalSales += module.exports.getTotalSales(data);
+        results.catagories = module.exports.getCatagorySales(data);
         if (err) reject(err)
         else {
           if (res.headers.link){
-            totalSales = module.exports.getMorePages(res.headers.link, totalSales, data, catagorySales);
-            fulfill(totalSales);
+            results = module.exports.getMorePages(res.headers.link, data, results);
+            fulfill(results);
           }
-          else fulfill(totalSales)
+          else fulfill(results)
         }
       });
     });
@@ -43,7 +43,8 @@ module.exports = {
                            'cache-control': 'no-cache',
                             'content-type': 'application/json',
                                     accept: 'application/json',
-                             authorization: 'Bearer ' + process.env.STELLAS_ACCESS_TOKEN }
+                             authorization: 'Bearer ' + process.env.STELLAS_ACCESS_TOKEN
+                         }
                     }
         request(options, function (err, res, data) {
         if (err) reject(err);
@@ -56,13 +57,15 @@ module.exports = {
     for (var i in data){
       totalSales += data[i].total_collected_money.amount;
     }
+
     return totalSales;
   },
-  getMorePages: function(url, totalSales, dataIn, catagorySalesIn){
+  getMorePages: function(url, dataIn, resultsIn){
     //parse url from returned url string;
     var dataArray = dataIn;
-    var salesTotal = totalSales;
-    var catagorySales = catagorySalesIn
+    var results = resultsIn;
+    console.log("more pages: +==}========>");
+    //console.log(results);
 
     for ( var i = 0; i < url.length; i++){
       if (url.charAt(i) == '>'){
@@ -83,55 +86,47 @@ module.exports = {
                     }
       request(options, function(err, res, data){
         data = JSON.parse(data);
-        salesTotal += module.exports.getTotalSales(data);
-        catagorySales.catagories = module.exports.getCatagorySales(data);
-        console.log(catagorySales.catagories);
-        console.log(salesTotal);
+        results.totalSales += module.exports.getTotalSales(data);
+        results.catagories = module.exports.getCatagorySales(data);
         if (err) reject(err)
 
         if (res.headers.link) {
-          salesTotal = module.exports.getMorePages(res.headers.link, salesTotal, data, catagorySales);
-          fulfill(salesTotal);
+          results = module.exports.getMorePages(res.headers.link, data, results);
+          fulfill(results);
         }
         if (!res.headers.link) {
-          fulfill(salesTotal);
+          fulfill(results);
         }
       });
     });
   },
   getCatagorySales: function(data){
-    var catagorySales = {};
-    catagorySales.catagories = {};
+    var results = {};
 
     for (var i in data){
       for (var e in data[i].itemizations)
         var catagoryName = data[i].itemizations[e].item_detail.category_name;
         if(!catagoryName) {
-          if (catagorySales.catagories.uncatagorized) {
-            catagorySales.catagories.uncatagorized.totalSales = data[i].itemizations[e].net_sales_money.amount;
-            catagorySales.catagories.uncatagorized.items += 1;
+          if (results.uncatagorized) {
+            results.uncatagorized.totalSales = data[i].itemizations[e].net_sales_money.amount;
+            results.uncatagorized.items += 1;
           } else {
-            catagorySales.catagories.uncatagorized = {};
-            catagorySales.catagories.uncatagorized.totalSales = data[i].itemizations[e].net_sales_money.amount;
-            catagorySales.catagories.uncatagorized.items = 1;
+            results.uncatagorized = {};
+            results.uncatagorized.totalSales = data[i].itemizations[e].net_sales_money.amount;
+            results.uncatagorized.items = 1;
           }
         } else {
-          if (catagorySales.catagories[catagoryName]){
-            catagorySales.catagories[catagoryName].totalSales += data[i].itemizations[e].net_sales_money.amount;
-            catagorySales.catagories[catagoryName].items  += Math.floor(data[i].itemizations[e].quantity);
+          if (results[catagoryName]){
+            results[catagoryName].totalSales += data[i].itemizations[e].net_sales_money.amount;
+            results[catagoryName].items  += Math.floor(data[i].itemizations[e].quantity);
           } else {
-            catagorySales.catagories[catagoryName] = {};
-            catagorySales.catagories[catagoryName].totalSales = data[i].itemizations[e].net_sales_money.amount;
-            catagorySales.catagories[catagoryName].items = Math.floor(data[i].itemizations[e].quantity);
+            results[catagoryName] = {};
+            results[catagoryName].totalSales = data[i].itemizations[e].net_sales_money.amount;
+            results[catagoryName].items = Math.floor(data[i].itemizations[e].quantity);
           }
-
-          // } else {
-          //   catagorySales.catagories = data[i].itemizations[e].item_detail.category_name;
-          // }
         }
     }
-    console.log(catagorySales);
-    return catagorySales;
+    return results;
   }
 }
 
