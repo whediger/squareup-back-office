@@ -10,7 +10,7 @@ module.exports = {
       results.catagoryTotal = 0;
       results.totalSales = 0;
       var options = { method: 'GET',
-                         url: 'https://connect.squareup.com/v1/996NZP3EEMBXN/payments?begin_time=2016-02-01T00:00:00Z&end_time=2016-02-02T00:00:00Z',
+                         url: 'https://connect.squareup.com/v1/' + LOCATION_ID + '/payments?begin_time=2016-02-01T00:00:00Z&end_time=2016-02-02T00:00:00Z',
                      headers:
                          { 'postman-token': '5ceddfb1-9d9e-2b6e-e8a1-07200fc04676',
                            'cache-control': 'no-cache',
