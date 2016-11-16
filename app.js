@@ -8,16 +8,47 @@ var routes = require('./routes/index');
 
 var app = express();
 
+//CORS Middleware
+app.use(function(req, res, next) {
+    var oneof = false;
+    if(req.headers.origin) {
+        res.header('Access-Control-Allow-Origin', req.headers.origin);
+        oneof = true;
+    }
+    if(req.headers['access-control-request-method']) {
+        res.header('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
+        oneof = true;
+    }
+    if(req.headers['access-control-request-headers']) {
+        res.header('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
+        oneof = true;
+    }
+    if(oneof) {
+        res.header('Access-Control-Max-Age', 60 * 60 * 24 * 365);
+    }
+
+    // intercept OPTIONS method
+    if (oneof && req.method == 'OPTIONS') {
+        res.send(200);
+    }
+    else {
+        next();
+    }
+});
+
 // uncomment after adding favicon
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({ extended: true}));
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 
 app.use('/', routes);
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8091;
 console.log('listening on port: ' + port);
+
+
+// error handlers +==}========>
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -25,8 +56,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
-// error handlers
 
 // development error handler
 // will print stacktrace
